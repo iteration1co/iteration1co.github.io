@@ -2,7 +2,7 @@
 // The new page fades itself in (see .page in style.css). The shared
 // gradient backdrop is never faded, so only the text appears to change.
 (function () {
-  var FADE_OUT_MS = 260;
+  var FADE_OUT_MS = 500;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var root = document.documentElement;
 
