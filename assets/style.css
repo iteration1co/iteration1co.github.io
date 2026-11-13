@@ -12,12 +12,29 @@
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
+html { background: #8a8a8a; }
 body {
   margin: 0;
-  background: var(--paper);
+  min-height: 100vh;
   color: var(--ink);
   font: 400 17px/1.6 "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+/* One fixed backdrop shared by every page, so it never moves between pages. */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1;
+  background: var(--grad);
+}
+
+/* Page transitions: content fades in on arrival, and out before leaving
+   (assets/transitions.js adds .is-leaving). The backdrop never fades. */
+.page { animation: page-in 0.42s ease-out both; }
+@keyframes page-in { from { opacity: 0; } to { opacity: 1; } }
+.is-leaving .page { animation: none; opacity: 0; transition: opacity 0.26s ease-in; }
+@media (prefers-reduced-motion: reduce) {
+  .page { animation: none; }
+  .is-leaving .page { transition: none; }
+}
+
 a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 a:hover { color: var(--muted); }
 img { max-width: 100%; }
@@ -33,7 +50,6 @@ img { max-width: 100%; }
 .home {
   min-height: 100vh;
   min-height: 100svh;
-  background: var(--grad);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -53,9 +69,15 @@ img { max-width: 100%; }
 .home nav a:hover { border-bottom-color: var(--ink); color: var(--ink); }
 
 /* ---------- Inner pages ---------- */
+.sheet {
+  max-width: 1040px; margin: 32px auto; border-radius: 14px; overflow: hidden;
+  background: rgba(240, 240, 240, 0.9);
+  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
 .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
 
-header.site { border-bottom: 1px solid var(--line); background: var(--paper); }
+header.site { border-bottom: 1px solid var(--line); }
 header.site .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
 header.site .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
 header.site .brand .mark {
@@ -111,6 +133,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; padding
 footer a { color: var(--muted); }
 
 @media (max-width: 760px) {
+  .sheet { margin: 10px; border-radius: 12px; }
   .cols { grid-template-columns: 1fr; gap: 28px; padding: 40px 0; }
   .clips { grid-template-columns: 1fr; }
   .page-head { padding: 44px 0 28px; }
